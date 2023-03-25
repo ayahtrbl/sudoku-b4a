@@ -1,0 +1,112 @@
+﻿Build1=Default,b4a.example
+File1=Layout.bal
+FileGroup1=Default Group
+Group=Default Group
+Library1=core
+Library2=xui
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="29"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~
+Module1=Starter
+NumberOfFiles=1
+NumberOfLibraries=2
+NumberOfModules=1
+Version=10.2
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: Sudoku
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: portrait
+	#CanInstallToExternalStorage: False
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: True
+#End Region
+
+Sub Process_Globals
+	'These global variables will be declared once when the application starts.
+	'These variables can be accessed from all modules.
+	Private xui As XUI
+End Sub
+
+Sub Globals
+	'These global variables will be redeclared each time the activity is created.
+	
+	Dim grid(9,9) As Double
+	Private board As Panel
+	Dim cells(81) As Label
+
+	
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	Activity.LoadLayout("Layout")
+	
+	
+	Dim left, top, width, height As Int
+	left = 0
+	top = 0
+	width = board.Width/9
+	height = board.Height/9
+
+	For a = 0 To 80
+		cells(a).Initialize("")
+		Select Case a
+			Case 0,2,10,18,20, 6, 8, 16, 24, 26, 30, 32, 40, 48, 50, 54, 56, 64, 72, 74, 60, 62, 70, 78, 80
+				cells(a).Color =  Colors.LightGray
+
+			Case 1, 9, 11, 19, 7, 15, 17, 25, 31, 39, 41, 49, 55, 63, 65, 73, 61, 69, 71, 79
+				cells(a).Color =  Colors.White
+				
+			Case 3, 5, 13, 21, 23, 27, 29, 37, 45, 47, 33, 35, 43, 51, 53, 57, 59, 67, 75, 77
+				cells(a).Color =  Colors.White
+				
+			Case 4, 12, 14, 22, 28, 36, 38, 46, 34, 42, 44, 52, 58, 66, 68, 76
+				cells(a).Color =  Colors.LightGray
+				
+			Case Else
+				cells(a).Color = Colors.ARGB(127,Rnd(0,256),Rnd(0,256),Rnd(0,256))
+		End Select
+		
+		cells(a).TextColor = Colors.Black
+		cells(a).TextSize = 12
+		cells(a).Typeface = Typeface.SANS_SERIF
+		cells(a).Gravity = Gravity.CENTER
+		board.AddView(cells(a),left,top,width,height)
+		left = left + (board.Width/9)
+		
+		If ((a+1) Mod 9 = 0) Then
+			left = 0 
+			top = top + (board.Height/9)
+		End If
+		Next
+		
+End Sub
+
+
+Sub PopulateGrid_board()
+	
+	For row = 0 To 8
+		For col = 0 To 8
+			Dim cell As EditText = board.GetView(row * 9 + col)
+			If grid(row, col) > 0 Then
+				cell.Text = grid(row, col)
+				cell.Enabled = False ' Disable input for pre-filled numbers
+			Else
+				cell.Text = ""
+				cell.Enabled = True ' Enable input for empty cells
+			End If
+		Next
+	Next
+	
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
